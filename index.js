@@ -91,5 +91,5 @@ async function start() {
     await initContext(user, password);
 }
 
-dotenv.config();
+dotenv.config({ path: './.env' });
 await start();
