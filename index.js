@@ -24,7 +24,7 @@ async function scrapePage(page) {
     const description = await iframe.locator("#spocir [id*='spocirinfodetalhe'] #codigoinf").inputValue();
 
     const fileName = "status.txt";
-    const actualStatus = status + " - " + description;
+    const actualStatus = status + " -> " + description;
     let lastStatus = '';
 
     if (fs.existsSync(fileName)) {
