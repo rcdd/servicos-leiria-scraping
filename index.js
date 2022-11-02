@@ -24,7 +24,7 @@ async function scrapePage(page) {
     const description = await iframe.locator("#spocir [id*='spocirinfodetalhe'] #codigoinf").inputValue();
 
     const fileName = "status.txt";
-    const actualStatus = status + " -> " + description;
+    const actualStatus = "<b>" + status + "</b>\n" + description;
     let lastStatus = '';
 
     if (fs.existsSync(fileName)) {
@@ -36,9 +36,11 @@ async function scrapePage(page) {
             if (err) return console.log(err);
             console.log("saved last status to file");
         });
-        await sendMessage(status);
+
+        const message = "[Serviço Leiria]\n⚠️<u>Nova atualização</u>⚠️\n" + actualStatus + "";
+        await sendMessage(message);
     } else {
-        console.log("Same status");
+        console.log("Same status", actualStatus);
     }
 }
 

@@ -5,10 +5,8 @@ const URL = 'https://api.telegram.org/bot';
 const TOKEN = "553688050:AAHvh-7rKMBhADFMClVj36jMKtNrewei2oQ";
 const CHAT_ID = 600713700;
 
-export async function sendMessage(status) {
-    const date = moment().format("DD/MM/YYYY H:mm:ss.SSS");
-    const message = "[Serviço Leiria] -> Status processo de camara: \"" + status + "\"!!!";
-    const url = URL + TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + message + '&parse_mode=html';
+export async function sendMessage(message) {
+    const url = URL + TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURI(message) + '&parse_mode=html';
 
     try {
         const response = await fetch(url);
