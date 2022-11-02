@@ -1,8 +1,9 @@
 import fetch, { blobFromSync, FormData } from "node-fetch";
-import moment from "moment";
+import dotenv from 'dotenv'
 
+dotenv.config();
 const URL = 'https://api.telegram.org/bot';
-const TOKEN = "553688050:AAHvh-7rKMBhADFMClVj36jMKtNrewei2oQ";
+const TOKEN = process.env.TELEGRAM_TOKEN;
 const CHAT_ID = 600713700;
 
 export async function sendMessage(message) {

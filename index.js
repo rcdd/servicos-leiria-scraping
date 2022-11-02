@@ -1,6 +1,8 @@
 import { chromium } from 'playwright';
 import fs from 'fs';
+import dotenv from 'dotenv'
 import { sendMessage } from "./telegram.js";
+
 
 async function login(page, user, password) {
     const iframe = page.frameLocator("#myframeB");
@@ -78,22 +80,16 @@ async function initContext(user, password) {
 }
 
 async function start() {
-    const user = process.env.USER
-    const password = process.env.PASSWORD
-
-    const help = "Ex:\n\
-USER=1111111 PASSWORD=Password123 node index.js";
-
+    const user = process.env.USERNAME;
+    const password = process.env.PASSWORD;
 
     if (!user || !password) {
-        console.error("Needs login details\n" + help);
+        console.error("Please check your .env file\n");
         return;
     }
 
-    // while (!prize_applied) {
     await initContext(user, password);
-    // }
-
 }
 
+dotenv.config();
 await start();
