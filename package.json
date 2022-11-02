@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "dependencies": {
+    "moment": "^2.29.4",
+    "node-fetch": "^3.2.10",
+    "playwright": "^1.24.2"
+  },
+  "devDependencies": {
+    "postcss-loader": "^4.3.0"
+  }
+}
