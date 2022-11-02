@@ -2,6 +2,8 @@ import { chromium } from 'playwright';
 import fs from 'fs';
 import dotenv from 'dotenv'
 import { sendMessage } from "./telegram.js";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 
 async function login(page, user, password) {
@@ -25,7 +27,7 @@ async function scrapePage(page) {
     await iframe.locator("#spocir .mynetDivPresto .mynetListagem tbody tr").nth(0).click();
     const description = await iframe.locator("#spocir [id*='spocirinfodetalhe'] #codigoinf").inputValue();
 
-    const fileName = "status.txt";
+    const fileName = __dirname + "/status.txt";
     const actualStatus = "<b>" + status + "</b>\n" + description;
     let lastStatus = '';
 
@@ -91,5 +93,10 @@ async function start() {
     await initContext(user, password);
 }
 
-dotenv.config({ path: './.env' });
+// Load env file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const path = __dirname + '/.env';
+dotenv.config({ path });
+
 await start();

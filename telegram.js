@@ -1,7 +1,15 @@
 import fetch, { blobFromSync, FormData } from "node-fetch";
 import dotenv from 'dotenv'
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
-dotenv.config({ path: './.env' });
+
+// Load env file
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const path = __dirname + '/.env';
+dotenv.config({ path });
+
 const URL = 'https://api.telegram.org/bot';
 const TOKEN = process.env.TELEGRAM_TOKEN;
 const CHAT_ID = 600713700;
