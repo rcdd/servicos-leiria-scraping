@@ -19,11 +19,13 @@ async function login(page, user, password) {
     }
 }
 
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
 async function scrapePage(page) {
     const iframe = page.frameLocator("#myframeB");
-    await iframe.locator(".mynetListagem tbody tr").click();
+    await iframe.locator(".mynetListagem tbody tr").nth(0).click();
     const status = await iframe.locator("#SITUAPROD").inputValue();
-    await iframe.locator("#tabelaOrdenaVeRequerimento tbody tr").click();
+    await iframe.locator("#tabelaOrdenaVeRequerimento tbody tr").nth(1).click();
     await iframe.locator("#spocir .mynetDivPresto .mynetListagem tbody tr").nth(0).click();
     const description = await iframe.locator("#spocir [id*='spocirinfodetalhe'] #codigoinf").inputValue();
 
@@ -31,6 +33,7 @@ async function scrapePage(page) {
     const actualStatus = "<b>" + status + "</b>\n" + description;
     let lastStatus = '';
 
+    // await delay(500000);
     if (fs.existsSync(fileName)) {
         lastStatus = fs.readFileSync(fileName).toString();
     }
