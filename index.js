@@ -5,7 +5,6 @@ import { sendMessage } from "./telegram.js";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-
 async function login(page, user, password) {
     const iframe = page.frameLocator("#myframeB");
     await iframe.locator('#uid_futil').fill(user)
@@ -25,15 +24,33 @@ async function scrapePage(page) {
     const iframe = page.frameLocator("#myframeB");
     await iframe.locator(".mynetListagem tbody tr").nth(0).click();
     const status = await iframe.locator("#SITUAPROD").inputValue();
-    await iframe.locator("#tabelaOrdenaVeRequerimento tbody tr").nth(1).click();
-    await iframe.locator("#spocir .mynetDivPresto .mynetListagem tbody tr").nth(0).click();
-    const description = await iframe.locator("#spocir [id*='spocirinfodetalhe'] #codigoinf").inputValue();
+
+
+    await iframe.locator("#tabelaOrdenaVeRequerimento tbody tr").first().waitFor();
+    const process_count = await iframe.locator("#tabelaOrdenaVeRequerimento tbody tr").count();
+
+    const process_list = [];
+    for (let i = 0; i < process_count; i++) {
+        const process_number = await iframe.locator("#tabelaOrdenaVeRequerimento tbody tr").nth(i).locator('td').nth(0).innerText();
+        const situation = await iframe.locator("#tabelaOrdenaVeRequerimento tbody tr").nth(i).locator('td').nth(2).innerText();
+        await iframe.locator("#tabelaOrdenaVeRequerimento tbody tr").nth(i).click();
+        await iframe.locator("#spocir .mynetDivPresto .mynetListagem tbody tr").nth(0).click();
+        let description = await iframe.locator("#spocir [id*='spocirinfodetalhe'] #codigoinf").inputValue();
+        if (description === "") {
+            description = "---------------";
+        }
+        process_list.push({ 'id': process_number, situation, description })
+        // await delay(10000);
+    }
 
     const fileName = __dirname + "/status.txt";
-    const actualStatus = "<b>" + status + "</b>\n" + description;
-    let lastStatus = '';
+    let actualStatus = "";
+    for (let i = 0; i < process_list.length; i++) {
+        actualStatus += '👉 ' + process_list[i].id + '\n➡️ ' + process_list[i].situation + '\n⏩ ' + (process_list[i].description) + '\n\n';
+    }
 
     // await delay(500000);
+    let lastStatus = '';
     if (fs.existsSync(fileName)) {
         lastStatus = fs.readFileSync(fileName).toString();
     }
@@ -44,7 +61,7 @@ async function scrapePage(page) {
             console.log("saved last status to file");
         });
 
-        const message = "[Serviço Leiria]\n⚠️<u>Nova atualização</u>⚠️\n" + actualStatus + "";
+        const message = "<b>[Serviço Leiria]</b> ⚠️ <u>Nova atualização</u> ⚠️\n" + actualStatus + "";
         await sendMessage(message);
     } else {
         console.log("Same status", actualStatus);
